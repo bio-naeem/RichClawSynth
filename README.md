@@ -1,114 +1,247 @@
-# Experimental Step0/Step1
+# RichClawSynth
 
-This directory contains an isolated prototype for a more incremental `step0` and a template-driven `step1`.
-It does not modify the repository's existing `references/skill_compatibility.json`.
+A benchmark query synthesis pipeline for generating complex, multi-skill task queries from skill bundles and task templates.
 
-## Goal
+## Overview
 
-Instead of producing one monolithic compatibility graph, this experiment builds:
+RichClawSynth generates realistic benchmark queries by:
 
-- per-skill profiles
-- per-skill substitution and anti-pattern groups
-- a task-template registry for `step1` sampling
+1. Building an **incremental skill index** from a skills pool
+2. Sampling **skill bundles** based on task templates and role slots
+3. Generating structured **hidden plans** for each bundle
+4. Rewriting plans into natural **user-facing queries**
+5. Materializing **workspaces** for downstream evaluation
 
-The current design target is to let `step1` sample by intent roles, domain coherence, lightweight artifact affinity, per-role balancing, and an LLM bundle judge before hidden-plan generation.
+The key design principle: difficulty comes from the **execution structure** of the sampled skill chain, not from artificially verbose queries.
 
-## Files
+## Features
 
-- `step0_incremental_index.py`: experimental builder
-- `step1_skeleton_sampler.py`: experimental sampler built on top of the shards
-- `step1_generate_hidden_plans.py`: experimental step1 JSONL generator
-- `audit_profiles.py`: flag suspicious profile classifications
-- `references/manual_overrides.json`: optional manual corrections for obviously misclassified skills
-- `artifacts/profiles/<slug>.json`: skill profile shard
-- `artifacts/groups/<slug>.json`: substitute and anti-pattern groups for `<slug>`
-- `artifacts/task_templates.json`: task skeletons
-- `artifacts/manifest.json`: run metadata and updated slugs
+- **Incremental Indexing**: Per-skill profiles and compatibility groups instead of monolithic graphs
+- **Template-Driven Sampling**: Role-based skill bundle generation with conflict detection
+- **Multi-Pass Query Writing**: Structured hidden plans → rich queries → naturalized queries
+- **Workspace Materialization**: Ready-to-use workspace bundles for evaluation
+- **LLM-Powered**: Uses OpenAI-compatible APIs for profile generation and query synthesis
 
-## Example
+## Installation
 
-Create or edit the project-local `.env` first:
+### Prerequisites
 
+- Python 3.10+
+- An OpenAI-compatible API (OpenAI, Azure, GLM, Qwen, etc.)
+
+### Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/bio-naeem/RichClawSynth.git
+cd RichClawSynth
+```
+
+2. Create and configure environment:
 ```bash
 cp .env.example .env
 ```
 
-Then fill in at least:
-
+3. Edit `.env` with your settings:
 ```bash
-OPENAI_MODEL=glm-5.1
-OPENAI_API_BASE=https://open.bigmodel.cn/api/paas/v4/
-OPENAI_API_KEY=...
+OPENAI_MODEL=your-model-name
+OPENAI_API_BASE=https://your-api-endpoint/
+OPENAI_API_KEY=your-api-key
 OPENAI_TIMEOUT=120
 SKILLS_POOL=/path/to/your/skills-pool
 ```
 
-Run a full build:
+## Quick Start
+
+### Run the Full Pipeline
 
 ```bash
+bash run_e2e_pipeline.sh 10 demo
+```
+
+This runs steps 1-4 and generates:
+- `outputs/step1_hidden_plans_10_demo.jsonl`
+- `outputs/step2_rewritten_10_demo.jsonl`
+- `outputs/step3_naturalized_10_demo.jsonl`
+- `workspace_outputs/demo/demo-work/`
+
+### Individual Steps
+
+**Step 0: Build/Refresh Skill Index**
+```bash
+# Build index for all skills
 python step0_incremental_index.py --all
+
+# Refresh a single skill
+python step0_incremental_index.py --refresh-skill my-skill
 ```
 
-Refresh a single skill after adding it to the pool:
-
-```bash
-python step0_incremental_index.py --refresh-skill my-new-skill
-```
-
-Sample a few skill bundles from the generated shards:
-
-```bash
-python step1_skeleton_sampler.py --count 5
-```
-
-Generate experimental step1 records:
-
+**Step 1: Generate Hidden Plans**
 ```bash
 python step1_generate_hidden_plans.py 12
 ```
 
-The step1 generator now does:
-
-- initial bundle sampling
-- full-bundle LLM judging with fixed subscores
-- whole-bundle resampling on judge failure
-- fallback accept of the highest-scoring attempt when retries are exhausted
-
-Judge policy can be tuned from `.env`:
-
+**Step 2: Rewrite to Richer Queries**
 ```bash
-STEP1_JUDGE_MAX_RESAMPLES=3
-STEP1_JUDGE_PASS_THRESHOLD=19
-STEP1_JUDGE_SINGLE_GOAL_FLOOR=4
-STEP1_JUDGE_ROLE_CHAIN_FLOOR=4
-STEP1_JUDGE_NATURALNESS_FLOOR=4
+python step2_rewrite_richer.py inputs/step1.jsonl outputs/step2.jsonl
 ```
 
-Audit suspicious profiles before trusting the sampler:
+**Step 3: Naturalize Queries**
+```bash
+python step3_naturalize_diversify.py outputs/step2.jsonl outputs/step3.jsonl
+```
+
+**Step 4: Build Workspaces**
+```bash
+python step4_build_workspaces.py outputs/step3.jsonl --tag demo --force
+```
+
+**Step 5: Generate Input Files (Optional)**
+```bash
+bash run_step5.sh
+```
+
+## Pipeline Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Skills Pool                               │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Step 0: Incremental Index                                      │
+│  - Parse SKILL.md frontmatter                                   │
+│  - Generate LLM-based profiles                                  │
+│  - Build substitution/anti-pattern groups                       │
+│  - Create task template registry                                │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Step 1: Bundle Sampling & Hidden Plan Generation               │
+│  - Sample skill bundles by role slots                           │
+│  - LLM-based bundle judging                                     │
+│  - Generate structured hidden plans                             │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Step 2: Rich Query Rewrite                                     │
+│  - Preserve task complexity                                     │
+│  - Maintain delivery structure                                  │
+│  - Keep global constraints                                      │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Step 3: Naturalization & Diversification                       │
+│  - Make queries sound natural                                   │
+│  - Add stylistic variety                                        │
+│  - Preserve structural constraints                              │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  Step 4: Workspace Materialization                              │
+│  - Create workspace directories                                 │
+│  - Symlink required skills                                      │
+│  - Write metadata files                                         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `OPENAI_MODEL` | Model name for LLM calls | `glm-5.1` |
+| `OPENAI_API_BASE` | API endpoint URL | `https://open.bigmodel.cn/api/paas/v4/` |
+| `OPENAI_API_KEY` | API key (required) | - |
+| `OPENAI_TIMEOUT` | Request timeout in seconds | `120` |
+| `SKILLS_POOL` | Path to skills directory | `./skills-selected` |
+| `PERSONAS_PATH` | Path to personas JSONL | `./references/user_scenarios.jsonl` |
+
+### Step 1 Judge Policy
+
+```bash
+STEP1_JUDGE_MAX_RESAMPLES=3      # Max resample attempts
+STEP1_JUDGE_PASS_THRESHOLD=19    # Minimum score to pass
+STEP1_JUDGE_SINGLE_GOAL_FLOOR=4  # Min single-goal score
+STEP1_JUDGE_ROLE_CHAIN_FLOOR=4   # Min role-chain score
+STEP1_JUDGE_NATURALNESS_FLOOR=4  # Min naturalness score
+```
+
+## Project Structure
+
+```
+RichClawSynth/
+├── config/
+│   ├── task_templates.json      # Task template definitions
+│   └── topic_taxonomy.json      # Topic-dependent heuristics
+├── references/
+│   ├── manual_overrides.json    # Manual profile corrections
+│   ├── topics_narrowed.txt      # Topic source for step1
+│   └── user_scenarios.jsonl     # Persona definitions
+├── artifacts/                   # Generated index (gitignored)
+│   ├── profiles/
+│   ├── groups/
+│   └── manifest.json
+├── outputs/                     # Pipeline outputs (gitignored)
+├── workspace_outputs/           # Materialized workspaces (gitignored)
+├── step0_incremental_index.py   # Build skill index
+├── step1_skeleton_sampler.py    # Sample skill bundles
+├── step1_generate_hidden_plans.py
+├── step2_rewrite_richer.py
+├── step3_naturalize_diversify.py
+├── step4_build_workspaces.py
+├── step5_file_generate.py       # Optional input file generation
+├── pipeline_common.py           # Shared utilities
+├── prompts_step2_exp.py         # Step 2 prompt templates
+├── prompts_step3_exp.py         # Step 3 prompt templates
+├── run_e2e_pipeline.sh          # End-to-end runner
+└── run_step5.sh                 # Step 5 runner
+```
+
+## Validation
+
+### Audit Profiles
+
+Flag suspicious skill classifications:
 
 ```bash
 python audit_profiles.py --limit 20
 ```
 
-Run local compile + no-network smoke checks before hitting real APIs:
+### Smoke Checks
+
+Run local validation without network calls:
 
 ```bash
 python run_local_smoke_checks.py
 ```
 
-By default the scripts auto-load `.env`, then fall back to environment variables.
-`step0` / `step1` / `step2` / `step3` all now share the same OpenAI defaults and timeout handling.
-For a direct shell export flow, set:
+## API Compatibility
 
-```bash
-export OPENAI_API_BASE="https://open.bigmodel.cn/api/paas/v4/"
-export OPENAI_MODEL="glm-5.1"
-export OPENAI_API_KEY="..."
-```
+The pipeline supports any OpenAI-compatible API:
 
-The script also accepts model names like `openai/glm-5.1` and will normalize them to `glm-5.1` before sending the request.
+- **OpenAI**: `https://api.openai.com/v1/`
+- **Azure OpenAI**: `https://your-resource.openai.azure.com/`
+- **GLM (Zhipu)**: `https://open.bigmodel.cn/api/paas/v4/`
+- **Qwen (Alibaba)**: `https://dashscope.aliyuncs.com/compatible-mode/v1/`
+- **Local models**: Any local server implementing the OpenAI API
 
-`step0_incremental_index.py` now requires LLM access and no longer provides a heuristic-only fallback mode.
-You can still keep a small `references/manual_overrides.json` file for edge-case skills whose roles or artifact tags need explicit correction.
+Model names with prefixes (e.g., `openai/gpt-4`, `qwen/qwen3.6-plus`) are automatically normalized.
 
-Generated artifacts are written under `outputs/`, `workspace_outputs/`, and `artifacts/`; these are intended as build/runtime outputs rather than hand-edited source files.
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Acknowledgments
+
+This project builds on concepts from skill-based agent evaluation and benchmark synthesis research.
