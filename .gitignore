@@ -26,6 +26,9 @@ artifacts/manifest.json
 artifacts/profiles.jsonl
 artifacts/task_templates.json
 
+# User-specific config
+references/manual_overrides.json
+
 # IDE
 .vscode/
 .idea/

@@ -217,7 +217,7 @@ RichClawSynth/
 │   ├── task_templates.json      # Task template definitions
 │   └── topic_taxonomy.json      # Topic-dependent heuristics
 ├── references/
-│   ├── manual_overrides.json    # Manual profile corrections
+│   ├── manual_overrides.example.json    # Example profile corrections
 │   ├── topics_narrowed.txt      # Topic source for step1
 │   └── user_scenarios.jsonl     # Persona definitions
 ├── artifacts/                   # Generated index (gitignored)

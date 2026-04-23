@@ -1,0 +1,71 @@
+{
+  "weather": {
+    "intent_roles": [
+      "collect",
+      "analyze",
+      "deliver"
+    ],
+    "allowed_roles": [
+      "collect",
+      "analyze",
+      "deliver"
+    ],
+    "artifact_in": [
+      "text",
+      "web"
+    ],
+    "artifact_out": [
+      "text",
+      "chart"
+    ],
+    "domain_tags": [
+      "general"
+    ],
+    "override_note": "Weather is primarily an information retrieval and summary skill, not a transform skill."
+  },
+  "edge-tts": {
+    "intent_roles": [
+      "deliver",
+      "enhance"
+    ],
+    "allowed_roles": [
+      "deliver",
+      "enhance"
+    ],
+    "artifact_in": [
+      "text"
+    ],
+    "artifact_out": [
+      "audio",
+      "mp3"
+    ],
+    "domain_tags": [
+      "media"
+    ],
+    "override_note": "TTS is a delivery layer that turns finished text into audio."
+  },
+  "skill-creator": {
+    "intent_roles": [
+      "transform",
+      "deliver"
+    ],
+    "task_eligible": false,
+    "allowed_roles": [
+      "transform",
+      "deliver"
+    ],
+    "allow_required_slots": false,
+    "artifact_in": [
+      "text"
+    ],
+    "artifact_out": [
+      "text",
+      "docx"
+    ],
+    "domain_tags": [
+      "research",
+      "office"
+    ],
+    "override_note": "Skill creator is a meta authoring workflow, not a general end-user analysis skill."
+  }
+}
