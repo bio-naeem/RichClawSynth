@@ -203,7 +203,7 @@ def sync_workspace(ws_dir: Path, tmp_ws: Path):
     tmp_ws.mkdir(parents=True, exist_ok=True)
 
     for item in ws_dir.iterdir():
-        if item.name in {LOG_FILENAME, "skills"}:
+        if item.name == LOG_FILENAME:
             continue
         target = tmp_ws / item.name
         try:
