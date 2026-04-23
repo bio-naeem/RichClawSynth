@@ -1,0 +1,4 @@
+interface:
+  display_name: "Claw Input File Generator"
+  short_description: "Generate synthetic benchmark input files"
+  default_prompt: "Use $claw-input-file-generator to infer the required input files from the query, choose the matching generator by file type, preserve any explicit paths, otherwise write under tmp_output/, run the generator with explicit --output values, verify the files exist on disk, and report exact setup commands if dependencies are missing."

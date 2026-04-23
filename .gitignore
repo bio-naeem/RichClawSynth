@@ -1,0 +1,33 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Node
+node_modules/
+
+# Build outputs
+outputs/
+workspace_outputs/
+logs/
+
+# Generated artifacts
+artifacts/groups/
+artifacts/profiles/
+artifacts/manifest.json
+artifacts/profiles.jsonl
+artifacts/task_templates.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

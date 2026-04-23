@@ -1,0 +1,74 @@
+{
+  "templates": [
+    {
+      "name": "research_plus_delivery_package",
+      "primary_chain_roles": ["collect", "analyze", "deliver"],
+      "secondary_chain_roles": ["transform", "review"],
+      "secondary_chain_kind": "refinement_for_decision",
+      "enhancement_chain_roles": ["transform", "publish"],
+      "enhancement_chain_kind": "execution_support",
+      "support_roles": ["enhance", "publish"],
+      "description": "主链负责收集、判断和最终交付，副链压缩出更利于拍板的决策版，增强链再补一层可直接推进或转发的执行版。"
+    },
+    {
+      "name": "file_extract_plus_report_package",
+      "primary_chain_roles": ["extract", "analyze", "deliver"],
+      "secondary_chain_roles": ["transform", "review"],
+      "secondary_chain_kind": "refinement_for_decision",
+      "enhancement_chain_roles": ["transform", "enhance"],
+      "enhancement_chain_kind": "execution_support",
+      "support_roles": ["enhance"],
+      "description": "主链从文件或原始材料中提取并分析，副链收束成决策版，增强链把它改造成更便于照着执行的使用版。"
+    },
+    {
+      "name": "research_plus_visual_support",
+      "primary_chain_roles": ["collect", "analyze", "deliver"],
+      "secondary_chain_roles": ["enhance", "review"],
+      "secondary_chain_kind": "presentation_support",
+      "enhancement_chain_roles": ["transform", "publish"],
+      "enhancement_chain_kind": "audience_adaptation",
+      "support_roles": ["transform", "publish"],
+      "description": "主链做研究和结论交付，副链负责可视化增强和阅读体验重组，增强链再补一层适合转给他人快速理解的版本。"
+    },
+    {
+      "name": "collect_plus_verification",
+      "primary_chain_roles": ["collect", "analyze", "deliver"],
+      "secondary_chain_roles": ["collect", "review"],
+      "secondary_chain_kind": "source_check_support",
+      "enhancement_chain_roles": ["transform", "enhance"],
+      "enhancement_chain_kind": "execution_support",
+      "support_roles": ["enhance", "transform"],
+      "description": "主链给出结论和主交付，副链补来源核查或规则确认，增强链把已核实的结果整理成更方便直接执行的版本。"
+    },
+    {
+      "name": "extract_plus_delivery_refine",
+      "primary_chain_roles": ["extract", "transform", "deliver"],
+      "secondary_chain_roles": ["analyze", "review"],
+      "secondary_chain_kind": "analysis_with_evidence_check",
+      "enhancement_chain_roles": ["transform", "publish"],
+      "enhancement_chain_kind": "audience_adaptation",
+      "support_roles": ["enhance"],
+      "description": "主链完成提取、整理和交付，副链补判断与证据对应关系，增强链再生成更适合给他人查看或协同推进的版本。"
+    },
+    {
+      "name": "compare_plus_publish_package",
+      "primary_chain_roles": ["collect", "analyze", "deliver"],
+      "secondary_chain_roles": ["publish", "review"],
+      "secondary_chain_kind": "publish_support",
+      "enhancement_chain_roles": ["transform", "enhance"],
+      "enhancement_chain_kind": "decision_support",
+      "support_roles": ["enhance", "transform"],
+      "description": "主链完成对比判断和主结果输出，副链产出适合发送的版本，增强链再补一层更短、更利于快速拍板的决策版。"
+    },
+    {
+      "name": "document_plus_multiformat_output",
+      "primary_chain_roles": ["transform", "deliver"],
+      "secondary_chain_roles": ["review", "enhance"],
+      "secondary_chain_kind": "presentation_support",
+      "enhancement_chain_roles": ["publish", "transform"],
+      "enhancement_chain_kind": "audience_adaptation",
+      "support_roles": ["publish", "collect"],
+      "description": "主链围绕已有内容生成正式结果，副链补阅读体验和展示增强，增强链再补一层适合不同阅读对象快速消费的版本。"
+    }
+  ]
+}
