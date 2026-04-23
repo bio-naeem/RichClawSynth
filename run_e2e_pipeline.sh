@@ -73,11 +73,13 @@ python "${ROOT_DIR}/step3_naturalize_diversify.py" \
   --api-base "${API_BASE}" \
   --api-key "${API_KEY}"
 
+SKILLS_POOL="${SKILLS_POOL:-${ROOT_DIR}/skills-selected}"
+
 echo "[run] step4 -> ${ROOT_DIR}/workspace_outputs/${TAG}"
 python "${ROOT_DIR}/step4_build_workspaces.py" \
   "${STEP3_OUT}" \
   --tag "${TAG}" \
-  --skills-pool "/data/mmwang35/skills-selected" \
+  --skills-pool "${SKILLS_POOL}" \
   --force
 
 echo "[done] outputs:"

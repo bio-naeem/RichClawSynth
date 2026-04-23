@@ -45,13 +45,13 @@ def parse_args():
 
 args = parse_args()
 
-# default values or from args
-WORKSPACE_HUB = args.hub or Path("/data/mmwang35/000_all_workspace_run/0417-hard-500/workspace_0417_hard_500-work")
-WORKSPACE_BASE = args.base or Path("/data/mmwang35/000_all_workspace_run/0417-hard-500/workspace_0417_hard_filegen_workspace_work")
-RESULTS_DIR = args.results or Path("/data/mmwang35/000_all_workspace_run/0417-hard-500/workspace_0417_hard_500-work_filegen_workspace_result")
+# Default values can be overridden via CLI args
+WORKSPACE_HUB = args.hub or Path(os.environ.get("WORKSPACE_HUB", ""))
+WORKSPACE_BASE = args.base or Path(os.environ.get("WORKSPACE_BASE", ""))
+RESULTS_DIR = args.results or Path(os.environ.get("RESULTS_DIR", ""))
 
-# Skills 目录（只软链接 claw-input-file-generator）
-SKILLS_SOURCE = Path("/data/mmwang35/gpt-exp/.agent/skills/claw-input-file-generator")
+# Skills directory (symlink claw-input-file-generator)
+SKILLS_SOURCE = Path(os.environ.get("SKILLS_SOURCE", str(EXP_ROOT / ".agent" / "skills" / "claw-input-file-generator")))
 
 # openclaw 配置
 MODEL = args.model

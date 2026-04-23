@@ -30,7 +30,7 @@ The current design target is to let `step1` sample by intent roles, domain coher
 Create or edit the project-local `.env` first:
 
 ```bash
-cp gpt-exp/.env.example gpt-exp/.env
+cp .env.example .env
 ```
 
 Then fill in at least:
@@ -40,31 +40,31 @@ OPENAI_MODEL=glm-5.1
 OPENAI_API_BASE=https://open.bigmodel.cn/api/paas/v4/
 OPENAI_API_KEY=...
 OPENAI_TIMEOUT=120
-SKILLS_POOL=/abs/path/to/skills-selected
+SKILLS_POOL=/path/to/your/skills-pool
 ```
 
 Run a full build:
 
 ```bash
-python gpt-exp/step0_incremental_index.py --all
+python step0_incremental_index.py --all
 ```
 
 Refresh a single skill after adding it to the pool:
 
 ```bash
-python gpt-exp/step0_incremental_index.py --refresh-skill my-new-skill
+python step0_incremental_index.py --refresh-skill my-new-skill
 ```
 
 Sample a few skill bundles from the generated shards:
 
 ```bash
-python gpt-exp/step1_skeleton_sampler.py --count 5
+python step1_skeleton_sampler.py --count 5
 ```
 
 Generate experimental step1 records:
 
 ```bash
-python gpt-exp/step1_generate_hidden_plans.py 12
+python step1_generate_hidden_plans.py 12
 ```
 
 The step1 generator now does:
@@ -87,16 +87,16 @@ STEP1_JUDGE_NATURALNESS_FLOOR=4
 Audit suspicious profiles before trusting the sampler:
 
 ```bash
-python gpt-exp/audit_profiles.py --limit 20
+python audit_profiles.py --limit 20
 ```
 
 Run local compile + no-network smoke checks before hitting real APIs:
 
 ```bash
-python gpt-exp/run_local_smoke_checks.py
+python run_local_smoke_checks.py
 ```
 
-By default the scripts auto-load `gpt-exp/.env`, then fall back to environment variables.
+By default the scripts auto-load `.env`, then fall back to environment variables.
 `step0` / `step1` / `step2` / `step3` all now share the same OpenAI defaults and timeout handling.
 For a direct shell export flow, set:
 

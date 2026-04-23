@@ -20,7 +20,7 @@ if [ -n "$BASE" ]; then ARGS="$ARGS --base $BASE"; fi
 if [ -n "$RESULTS" ]; then ARGS="$ARGS --results $RESULTS"; fi
 
 SCRIPTS=(
-  "/data/mmwang35/gpt-exp/step5_file_generate.py$ARGS"
+  "${SCRIPT_DIR}/step5_file_generate.py${ARGS}"
 )
 
 for script_with_args in "${SCRIPTS[@]}"; do

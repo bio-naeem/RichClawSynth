@@ -41,34 +41,34 @@ Start by identifying which of these cases applies:
 
 - `COUNT` is required for generation
 - `TAG` is optional and defaults to `demo`
-- `SKILLS_POOL` defaults to `/data/mmwang35/skills-selected`
+- `SKILLS_POOL` defaults to `<repo-root>/skills-selected`
 
 ## Command reference
 
 ### Check for new skills
 ```bash
-python3 -c "import os, json; m = json.load(open('/data/mmwang35/gpt-exp/artifacts/manifest.json')); indexed = set(m.get('indexed_skills', [])); on_disk = {d for d in os.listdir('/data/mmwang35/skills-selected') if os.path.isdir(os.path.join('/data/mmwang35/skills-selected', d))}; diff = on_disk - indexed; print(f'New skills: {diff}')"
+python3 -c "import os, json; m = json.load(open('artifacts/manifest.json')); indexed = set(m.get('indexed_skills', [])); on_disk = {d for d in os.listdir(os.environ.get('SKILLS_POOL', 'skills-selected')) if os.path.isdir(os.path.join(os.environ.get('SKILLS_POOL', 'skills-selected'), d))}; diff = on_disk - indexed; print(f'New skills: {diff}')"
 ```
 
 ### Refresh index (Step 0)
 ```bash
-python3 /data/mmwang35/gpt-exp/step0_incremental_index.py --all
+python3 step0_incremental_index.py --all
 ```
 
 ### Audit selected profiles
 ```bash
-python3 /data/mmwang35/gpt-exp/audit_profiles.py --slugs <slug1> <slug2> ...
+python3 audit_profiles.py --slugs <slug1> <slug2> ...
 ```
 
 ### Run Full E2E Pipeline (Step 1-4)
 ```bash
-bash /data/mmwang35/gpt-exp/run_e2e_pipeline.sh <COUNT> <TAG>
+bash run_e2e_pipeline.sh <COUNT> <TAG>
 ```
 
 ### Background File Generation (Step 5)
 Run this after step4 is complete to pre-generate required input files (images, docs, etc.) in the workspaces.
 ```bash
-bash /data/mmwang35/gpt-exp/run_step5.sh
+bash run_step5.sh
 ```
 
 ## Output expectations
@@ -76,6 +76,6 @@ bash /data/mmwang35/gpt-exp/run_step5.sh
 When this skill completes, your response should include:
 - What scope was executed
 - Output JSONL paths (Step 1, 2, 3)
-- **Workplace bundle path**: `/data/mmwang35/gpt-exp/workspace_outputs/<TAG>/<TAG>-work/`
+- **Workplace bundle path**: `workspace_outputs/<TAG>/<TAG>-work/`
 - **File generation status**: Whether background file generation (Step 5) was triggered
 - Any issues found during profile audit
