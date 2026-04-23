@@ -22,6 +22,42 @@ The key design principle: difficulty comes from the **execution structure** of t
 - **Workspace Materialization**: Ready-to-use workspace bundles for evaluation
 - **LLM-Powered**: Uses OpenAI-compatible APIs for profile generation and query synthesis
 
+## Using with AI Agents (Recommended)
+
+This repository includes a built-in skill for AI agents (Claude Code, Cursor, etc.) to help operate the pipeline. This is the **recommended way** to use RichClawSynth.
+
+### synth-pipeline Skill
+
+Located at `.agent/skills/synth-pipeline/SKILL.md`, this skill enables AI agents to:
+
+- Detect and refresh newly added skills in your skills pool
+- Audit profile classifications for suspicious results
+- Run the full pipeline (Step 1-4) with proper configuration
+- Trigger background file generation (Step 5)
+- Guide you through each step with appropriate confirmations
+
+### Quick Example
+
+Simply tell your AI agent what you want to do:
+
+```
+"Run the pipeline to generate 20 benchmark samples with tag 'experiment'"
+```
+
+```
+"Check if there are new skills in my pool and refresh the index"
+```
+
+```
+"Generate input files for the workspaces"
+```
+
+The agent will automatically use the `synth-pipeline` skill to execute the appropriate steps.
+
+### Manual Usage
+
+If you prefer to run commands manually, see the [Quick Start](#quick-start) section below.
+
 ## Installation
 
 ### Prerequisites
